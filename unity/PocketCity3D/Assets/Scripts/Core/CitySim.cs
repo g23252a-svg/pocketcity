@@ -113,7 +113,8 @@ namespace PocketCity
         {
             unchecked
             {
-                int h = x * 374761393 + y * 668265263 + salt * 2246822519;
+                // 2246822519는 int 범위를 넘어 uint로 잡히는데, int * uint는 컴파일되지 않는다.
+                int h = x * 374761393 + y * 668265263 + salt * unchecked((int)2246822519u);
                 h = (h ^ (h >> 13)) * 1274126177;
                 uint u = (uint)(h ^ (h >> 16));
                 return u / 4294967296f;
