@@ -8,6 +8,17 @@
 빌드 도구도, 패키지 의존성도, 서버도 없습니다. 순수 HTML + CSS + JavaScript 파일 몇 개가 전부입니다.
 그래서 배포도 GitHub Pages가 `main` 브랜치 루트를 그대로 서빙합니다 — 빌드 단계가 없습니다.
 
+## 두 가지 버전
+
+| | 웹 (저장소 루트) | Unity (`unity/`) |
+|---|---|---|
+| 실행 | 링크만 열면 끝, 설치 불필요 | Unity Editor에서 열어 Play 또는 폰으로 빌드 |
+| 그래픽 | 2D 캔버스 (위에서 내려다보는 타일) | 3D 메시 · 그림자 · 안개, 건물 성장 애니메이션 |
+| 배포 | GitHub Pages | Android APK / iOS |
+
+시뮬레이션 규칙과 밸런스 수치는 두 버전이 동일합니다.
+Unity 버전은 [`unity/README.md`](unity/README.md)를 보세요.
+
 ## 홈 화면에 추가
 
 - **iOS Safari** — 공유 버튼 → "홈 화면에 추가"
