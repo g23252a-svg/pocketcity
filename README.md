@@ -6,6 +6,7 @@
 **▶ 플레이: https://g23252a-svg.github.io/pocketcity/**
 
 빌드 도구도, 패키지 의존성도, 서버도 없습니다. 순수 HTML + CSS + JavaScript 파일 몇 개가 전부입니다.
+그래서 배포도 GitHub Pages가 `main` 브랜치 루트를 그대로 서빙합니다 — 빌드 단계가 없습니다.
 
 ## 홈 화면에 추가
 
