@@ -18,12 +18,21 @@ namespace PocketCity
         private TouchController _touch;
         private float _accumulator;
 
+        private static bool _started;
+
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void AutoStart()
         {
-            if (Object.FindObjectOfType<GameBootstrap>() != null) return;
+            // FindObjectOfType는 Unity 6에서 obsolete라 정적 플래그로 중복 생성을 막는다
+            if (_started) return;
+            _started = true;
             GameObject go = new GameObject("PocketCity");
             go.AddComponent<GameBootstrap>();
+        }
+
+        private void OnDestroy()
+        {
+            _started = false;
         }
 
         private void Awake()
@@ -99,7 +108,7 @@ namespace PocketCity
 
         private void SetupEventSystem()
         {
-            if (Object.FindObjectOfType<EventSystem>() != null) return;
+            if (EventSystem.current != null) return;
             GameObject es = new GameObject("EventSystem");
             es.transform.SetParent(transform, false);
             es.AddComponent<EventSystem>();

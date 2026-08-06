@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace PocketCity
 {
@@ -102,14 +103,33 @@ namespace PocketCity
         }
 
         /// <summary>GPU 인스턴싱을 켠 불투명 머티리얼.</summary>
+        private static Shader _litShader;
+
+        /// <summary>
+        /// 현재 렌더 파이프라인에 맞는 셰이더를 고른다. URP 프로젝트에서 Standard를
+        /// 쓰면 전부 마젠타로 나오므로 파이프라인을 먼저 확인해야 한다.
+        /// </summary>
+        private static Shader GetLitShader()
+        {
+            if (_litShader != null) return _litShader;
+
+            bool scriptablePipeline = GraphicsSettings.defaultRenderPipeline != null;
+            if (scriptablePipeline)
+            {
+                _litShader = Shader.Find("Universal Render Pipeline/Lit");
+                if (_litShader == null) _litShader = Shader.Find("HDRP/Lit");
+            }
+            if (_litShader == null) _litShader = Shader.Find("Standard");
+            if (_litShader == null) _litShader = Shader.Find("Universal Render Pipeline/Lit");
+            if (_litShader == null) _litShader = Shader.Find("Legacy Shaders/Diffuse");
+            return _litShader;
+        }
+
         public static Material CreateMaterial(Color color, float smoothness, float metallic)
         {
-            Shader shader = Shader.Find("Standard");
-            if (shader == null) shader = Shader.Find("Universal Render Pipeline/Lit");
-            if (shader == null) shader = Shader.Find("Diffuse");
-
-            Material m = new Material(shader);
+            Material m = new Material(GetLitShader());
             m.color = color;
+            if (m.HasProperty("_BaseColor")) m.SetColor("_BaseColor", color);
             if (m.HasProperty("_Glossiness")) m.SetFloat("_Glossiness", smoothness);
             if (m.HasProperty("_Smoothness")) m.SetFloat("_Smoothness", smoothness);
             if (m.HasProperty("_Metallic")) m.SetFloat("_Metallic", metallic);
@@ -122,6 +142,9 @@ namespace PocketCity
         {
             Material m = CreateMaterial(color, 0.2f, 0f);
             if (m.HasProperty("_Mode")) m.SetFloat("_Mode", 3f);
+            if (m.HasProperty("_Surface")) m.SetFloat("_Surface", 1f);   // URP: Transparent
+            if (m.HasProperty("_Blend")) m.SetFloat("_Blend", 0f);       // URP: Alpha
+            m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
             m.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             m.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             m.SetInt("_ZWrite", 0);
